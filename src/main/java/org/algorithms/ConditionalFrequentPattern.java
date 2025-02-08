@@ -9,7 +9,7 @@ record ConditionalFrequentPattern(String item, List<String> commonItems, int fre
         if (commonItems.isEmpty()) {
             return Collections.emptySet();
         }
-        Set<Set<String>> combinations = combinations(new HashSet<>(commonItems));
+        Set<Set<String>> combinations = Combination.of(new HashSet<>(commonItems));
         return combinations.stream()
                 .map(c -> {
                     Set<String> withItem = new HashSet<>(c);
@@ -19,20 +19,6 @@ record ConditionalFrequentPattern(String item, List<String> commonItems, int fre
                 .filter(c -> c.size() >= minPattern && c.size() <= maxPattern)
                 .map(c -> new FrequentPattern(c.stream().toList(), frequency))
                 .collect(Collectors.toSet());
-    }
-
-    private Set<Set<String>> combinations(Set<String> items) {
-        if (items.isEmpty()) {
-            return Collections.emptySet();
-        }
-        Set<Set<String>> result = new HashSet<>();
-        result.add(items);
-        for (String item : items) {
-            Set<String> others = new HashSet<>(items);
-            others.remove(item);
-            result.addAll(combinations(others));
-        }
-        return result;
     }
 
     @Override
