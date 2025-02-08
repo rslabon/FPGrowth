@@ -21,7 +21,7 @@ public class FPGrowth {
                                                     List<Transaction> transactions) {
         FPTrie fpTrie = new FPTrie(minSupport, transactions);
         return fpTrie.getConditionalPatternBase().stream()
-                .flatMap(b -> b.getConditionalFrequentPatternTree()
+                .flatMap(b -> b.getConditionalFrequentPattern()
                         .getFrequentPatterns(minPattern, maxPattern).stream())
                 .collect(Collectors.toSet());
     }

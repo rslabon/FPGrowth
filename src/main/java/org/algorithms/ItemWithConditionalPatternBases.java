@@ -8,7 +8,7 @@ record ItemWithConditionalPatternBases(String item, List<ConditionalPatternBase>
         return item + ": " + bases;
     }
 
-    public ConditionalFrequentPattern getConditionalFrequentPatternTree() {
+    public ConditionalFrequentPattern getConditionalFrequentPattern() {
         if (bases.isEmpty()) {
             return new ConditionalFrequentPattern(item, Collections.emptyList(), 0);
         }
