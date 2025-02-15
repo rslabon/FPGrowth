@@ -1,6 +1,7 @@
 package org.algorithms;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -21,8 +22,8 @@ public class FPGrowth {
                                                     List<Transaction> transactions) {
         FPTrie fpTrie = new FPTrie(minSupport, transactions);
         return fpTrie.getConditionalPatternBase().stream()
-                .flatMap(b -> b.getConditionalFrequentPattern()
-                        .getFrequentPatterns(minPattern, maxPattern).stream())
+                .flatMap(b -> b.getConditionalFrequentPattern(minSupport).stream())
+                .flatMap(cfp -> cfp.getFrequentPatterns(minPattern, maxPattern).stream())
                 .collect(Collectors.toSet());
     }
 }

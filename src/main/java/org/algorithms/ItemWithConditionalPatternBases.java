@@ -8,17 +8,24 @@ record ItemWithConditionalPatternBases(String item, List<ConditionalPatternBase>
         return item + ": " + bases;
     }
 
-    public ConditionalFrequentPattern getConditionalFrequentPattern() {
+    public Collection<ConditionalFrequentPattern> getConditionalFrequentPattern(int minSupport) {
         if (bases.isEmpty()) {
-            return new ConditionalFrequentPattern(item, Collections.emptyList(), 0);
+            return Collections.emptyList();
         }
-        Set<String> common = new LinkedHashSet<>(bases.getFirst().path());
-        int totalFreqency = bases.getFirst().frequency();
-        for (int i = 1; i < bases.size(); i++) {
-            ConditionalPatternBase base = bases.get(i);
-            common.retainAll(new HashSet<>(base.path()));
-            totalFreqency += base.frequency();
+        Set<ConditionalFrequentPattern> result = new HashSet<>();
+        for (ConditionalPatternBase base : bases) {
+            for (Set<String> combination : Combination.of(new HashSet<>(base.path()))) {
+                int totalFreqency = base.frequency();
+                for (ConditionalPatternBase other : bases) {
+                    if (!base.equals(other) && new HashSet<>(other.path()).containsAll(combination)) {
+                        totalFreqency += other.frequency();
+                    }
+                }
+                if (!combination.isEmpty() && totalFreqency >= minSupport) {
+                    result.add(new ConditionalFrequentPattern(item, combination.stream().sorted().toList(), totalFreqency));
+                }
+            }
         }
-        return new ConditionalFrequentPattern(item, common.stream().sorted().toList(), totalFreqency);
+        return result;
     }
 }
