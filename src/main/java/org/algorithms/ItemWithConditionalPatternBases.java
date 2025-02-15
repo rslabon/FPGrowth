@@ -13,17 +13,23 @@ record ItemWithConditionalPatternBases(String item, List<ConditionalPatternBase>
             return Collections.emptyList();
         }
         Set<ConditionalFrequentPattern> result = new HashSet<>();
+        Set<String> items = new HashSet<>();
+        Map<Set<String>, Integer> pathFrequency = new HashMap<>();
         for (ConditionalPatternBase base : bases) {
-            for (Set<String> combination : Combination.of(new HashSet<>(base.path()))) {
-                int totalFreqency = base.frequency();
-                for (ConditionalPatternBase other : bases) {
-                    if (!base.equals(other) && new HashSet<>(other.path()).containsAll(combination)) {
-                        totalFreqency += other.frequency();
-                    }
+            items.addAll(base.path());
+            pathFrequency.put(new HashSet<>(base.path()), base.frequency());
+        }
+
+        for (Set<String> combination : Combination.of(items)) {
+            int totalFreqency = pathFrequency.getOrDefault(combination, 0);
+            for (ConditionalPatternBase other : bases) {
+                Set<String> otherPath = new HashSet<>(other.path());
+                if (!combination.equals(otherPath) && otherPath.containsAll(combination)) {
+                    totalFreqency += other.frequency();
                 }
-                if (!combination.isEmpty() && totalFreqency >= minSupport) {
-                    result.add(new ConditionalFrequentPattern(item, combination.stream().sorted().toList(), totalFreqency));
-                }
+            }
+            if (!combination.isEmpty() && totalFreqency >= minSupport) {
+                result.add(new ConditionalFrequentPattern(item, combination.stream().sorted().toList(), totalFreqency));
             }
         }
         return result;

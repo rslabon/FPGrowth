@@ -37,7 +37,7 @@ public class Main {
 //        }
         long start = System.currentTimeMillis();
         System.err.println("Patterns:");
-        System.err.println(FPGrowth.findPatterns(2, 2, 10, transactions));
+        System.err.println(FPGrowth.findPatterns(3, 2, 10, transactions));
         long end = System.currentTimeMillis();
         System.err.println("COMPLETED IN " + (end - start) + " [ms]");
     }
